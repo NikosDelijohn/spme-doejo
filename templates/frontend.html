@@ -241,10 +241,22 @@ async function finalizeSelection() {
     });
     const result = await res.json();
 
-    // Display results
-    document.getElementById("results").innerHTML = result.table 
-        ? `<div class="mt-5">${result.table}</div>`
-        : `<div class="alert alert-warning mt-5">No table generated.</div>`;
+    const resultsDiv = document.getElementById("results");
+
+    let fiberBox = "";
+    if (result.fiber) {
+        fiberBox = `
+            <div class="alert alert-warning mb-4 p-3" id="fiber-box">
+                <strong>Recommended Fiber:</strong> You should use the <strong>${result.fiber}</strong> fiber.
+            </div>
+        `;
+    }
+
+    resultsDiv.innerHTML = 
+        fiberBox +
+        (result.table 
+            ? `<div class="mt-5">${result.table}</div>` 
+            : `<div class="alert alert-warning mt-5">No table generated.</div>`);
 }
 </script>
 

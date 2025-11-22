@@ -1,18 +1,14 @@
-/* ===============================================================
-   style.css — cleaned + slider restored + spinner keyframes + error box
-   =============================================================== */
-
-/* -------------------------
+/* ----------------------------------------------------------------
    1) THEME VARIABLES
-   Use :root for light defaults, and [theme="dark"] overrides.
-   Your JS sets the attribute on <html>.
-   ------------------------- */
+   Light theme via :root, dark theme overrides via [theme="dark"].
+   Your JS toggles `theme="dark"` on <html>.
+   ---------------------------------------------------------------- */
 :root {
     --primary-color:     #302AE6;
     --secondary-color:   #536390;
 
     --text-color:        #424242;
-    --text-color-rgb:    66, 66, 66;
+    --text-color-rgb:    66, 66, 66;      /* for rgba use */
 
     --background-color:  #ffffff;
     --heading-color:     #292922;
@@ -29,9 +25,10 @@
     --heading-color:     #818cab;
 }
 
-/* -------------------------
-   2) GLOBAL
-   ------------------------- */
+
+/* ----------------------------------------------------------------
+   2) GLOBAL ELEMENT BASE STYLES
+   ---------------------------------------------------------------- */
 html, body {
     height: 100%;
     margin: 0;
@@ -44,19 +41,20 @@ body {
     transition: background-color 0.25s ease, color 0.25s ease;
 }
 
+/* Navbar branding */
 .navbar-brand {
     color: var(--text-color) !important;
     transition: color 0.25s ease;
 }
-
 .navbar-brand:hover {
     color: var(--primary-color) !important;
 }
 
-/* -------------------------
-   3) BOOTSTRAP FORM OVERRIDES
-   keep inputs/selects/alerts readable in both themes
-   ------------------------- */
+
+/* ----------------------------------------------------------------
+   3) BOOTSTRAP OVERRIDES — Inputs, Selects, Alerts
+   Ensures consistent theming across both modes.
+   ---------------------------------------------------------------- */
 .form-control,
 .form-select,
 .alert {
@@ -65,23 +63,46 @@ body {
     border-color: rgba(var(--text-color-rgb), 0.25) !important;
 }
 
-/* Ensure option elements inherit colors (some browsers need explicit rules) */
+/* Ensure <option> inherits text & background in dark mode */
 .form-select option {
     background-color: var(--background-color) !important;
     color: var(--text-color) !important;
 }
 
-/* -------------------------
-   3.1) LARGER CHECKBOXES
-   ------------------------- */
+
+/* ----------------------------------------------------------------
+   3.1) CUSTOM CHECKBOXES (red when checked)
+   ---------------------------------------------------------------- */
+
+/* Unchecked state */
 .form-check-input {
-    transform: scale(1.0);   
-    margin-right: 0.5rem;    /* optional spacing adjustment */
+    transform: scale(1.0);
+    margin-right: 0.5rem;
+    background-color: var(--background-color) !important;
+    border-color: #cc0000 !important;
 }
 
-/* -------------------------
-   4) TEXT / HELPERS
-   ------------------------- */
+/* Checked: red background + white checkmark */
+.form-check-input:checked {
+    background-color: #cc0000 !important;
+    border-color: #cc0000 !important;
+}
+
+/* Replace Bootstrap default checkmark */
+.form-check-input:checked[type=checkbox] {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23ffffff' d='M13.485 1.929a1 1 0 0 1 .086 1.41l-7.25 9a1 1 0 0 1-1.465.08L2.4 11.02a1 1 0 1 1 1.2-1.6l2.14 1.6 6.36-7.9a1 1 0 0 1 1.385-.19z'/%3E%3C/svg%3E") !important;
+}
+
+/* Focus ring */
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(204, 0, 0, 0.35) !important;
+}
+
+
+/* ----------------------------------------------------------------
+   4) TEXT & LABELS
+   Ensures readable text in all themed environments.
+   ---------------------------------------------------------------- */
 label,
 strong,
 .card-title,
@@ -97,31 +118,38 @@ strong,
     opacity: 0.65 !important;
 }
 
-/* -------------------------
-   5) PLACEHOLDERS (clean, cross-browser)
-   ------------------------- */
+
+/* ----------------------------------------------------------------
+   5) PLACEHOLDERS — Cross-browser consistency
+   ---------------------------------------------------------------- */
 .form-control::placeholder,
 textarea::placeholder {
     color: rgba(var(--text-color-rgb), 0.55) !important;
     opacity: 1;
 }
 
-/* WebKit / Blink */
+/* WebKit */
 .form-control::-webkit-input-placeholder,
-textarea::-webkit-input-placeholder { color: rgba(var(--text-color-rgb), 0.55) !important; }
+textarea::-webkit-input-placeholder {
+    color: rgba(var(--text-color-rgb), 0.55) !important;
+}
 
 /* Firefox */
 .form-control::-moz-placeholder,
-textarea::-moz-placeholder { color: rgba(var(--text-color-rgb), 0.55) !important; }
+textarea::-moz-placeholder {
+    color: rgba(var(--text-color-rgb), 0.55) !important;
+}
 
-/* IE 10+ */
+/* IE10+ */
 .form-control:-ms-input-placeholder,
-textarea:-ms-input-placeholder { color: rgba(var(--text-color-rgb), 0.55) !important; }
+textarea:-ms-input-placeholder {
+    color: rgba(var(--text-color-rgb), 0.55) !important;
+}
 
-/* -------------------------
-   6) THEME SLIDER — restored and tuned
-   ------------------------- */
 
+/* ----------------------------------------------------------------
+   6) THEME TOGGLE SLIDER
+   ---------------------------------------------------------------- */
 .theme-slider {
     display: inline-block;
     height: 34px;
@@ -130,7 +158,7 @@ textarea:-ms-input-placeholder { color: rgba(var(--text-color-rgb), 0.55) !impor
     vertical-align: middle;
 }
 
-/* hide the native checkbox (but keep it focusable) */
+/* Hide native checkbox */
 .theme-slider input {
     position: absolute;
     opacity: 0;
@@ -138,7 +166,7 @@ textarea:-ms-input-placeholder { color: rgba(var(--text-color-rgb), 0.55) !impor
     height: 0;
 }
 
-/* the track */
+/* Track */
 .slider {
     position: absolute;
     inset: 0;
@@ -147,7 +175,7 @@ textarea:-ms-input-placeholder { color: rgba(var(--text-color-rgb), 0.55) !impor
     transition: background-color 0.25s ease;
 }
 
-/* the knob */
+/* Knob */
 .slider::before {
     content: "";
     position: absolute;
@@ -158,30 +186,26 @@ textarea:-ms-input-placeholder { color: rgba(var(--text-color-rgb), 0.55) !impor
     border-radius: 50%;
     background: #fff;
     box-shadow: 0 1px 2px rgba(0,0,0,0.15);
-    transition: transform 0.25s ease, background-color 0.25s ease;
+    transition: transform 0.25s ease;
 }
 
-/* checked state — uses adjacent sibling selector */
+/* Checked state */
 .theme-slider input:checked + .slider {
     background-color: var(--primary-color);
 }
-
 .theme-slider input:checked + .slider::before {
     transform: translateX(26px);
 }
 
-/* rounded styles (keeps backward compatibility) */
-.slider.round { border-radius: 34px; }
-.slider.round::before { border-radius: 50%; }
-
-/* keyboard focus accessibility */
+/* Focus ring */
 .theme-slider input:focus + .slider {
     box-shadow: 0 0 0 3px rgba(50, 115, 220, 0.12);
 }
 
-/* -------------------------
-   7) CARD / THEME BOX for dynamic selection boxes
-   ------------------------- */
+
+/* ----------------------------------------------------------------
+   7) THEME BOX (styled container for options)
+   ---------------------------------------------------------------- */
 .theme-box {
     transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
     background-color: var(--background-color);
@@ -189,16 +213,15 @@ textarea:-ms-input-placeholder { color: rgba(var(--text-color-rgb), 0.55) !impor
     border: 1px solid rgba(var(--text-color-rgb), 0.12);
 }
 
-/* inside theme-box ensure selects inherit color */
 .theme-box .form-select {
     background-color: var(--background-color) !important;
     color: var(--text-color) !important;
 }
 
-/* -------------------------
-   8) BUTTON SPINNER — FIXED
-   ------------------------- */
 
+/* ----------------------------------------------------------------
+   8) LOADING BUTTON SPINNER
+   ---------------------------------------------------------------- */
 #submitBtn {
     position: relative;
     min-width: 200px;
@@ -209,7 +232,6 @@ textarea:-ms-input-placeholder { color: rgba(var(--text-color-rgb), 0.55) !impor
     transition: opacity 0.2s ease;
 }
 
-/* wrapper handles vertical centering */
 #submitBtn .spinner-wrapper {
     position: absolute;
     right: 16px;
@@ -217,7 +239,6 @@ textarea:-ms-input-placeholder { color: rgba(var(--text-color-rgb), 0.55) !impor
     transform: translateY(-50%);
 }
 
-/* spinner handles ONLY rotation */
 #submitBtn .spinner-border {
     width: 1.4rem;
     height: 1.4rem;
@@ -226,26 +247,26 @@ textarea:-ms-input-placeholder { color: rgba(var(--text-color-rgb), 0.55) !impor
     display: none;
 }
 
-/* show spinner + hide text */
 #submitBtn.loading .btn-text {
     opacity: 0;
 }
+
 #submitBtn.loading .spinner-border {
     display: block !important;
 }
 
-/* correct spinning animation */
 @keyframes spinner-rotate {
     100% { transform: rotate(360deg); }
 }
 
-/* -------------------------
-   9) ERROR BOX (themed, works in both light & dark)
-   ------------------------- */
+
+/* ----------------------------------------------------------------
+   9) ERROR BOX — themed for both light & dark modes
+   ---------------------------------------------------------------- */
 .error-box {
-    background-color: #ffe5e5;     /* light pink/red background in light mode */
-    border: 1px solid #ff4c4c;    /* strong red border */
-    color: #b20000;                /* dark red text for readability */
+    background-color: #ffe5e5;
+    border: 1px solid #ff4c4c;
+    color: #b20000;
     padding: 12px 16px;
     border-radius: 8px;
     margin-bottom: 1rem;
@@ -253,20 +274,30 @@ textarea:-ms-input-placeholder { color: rgba(var(--text-color-rgb), 0.55) !impor
 }
 
 [theme="dark"] .error-box {
-    background-color: #5a0000;     /* deep red background */
-    border-color: #ff4c4c;         /* bright red border for contrast */
-    color: #ffffff;                /* white text for readability */
+    background-color: #5a0000;
+    border-color: #ff4c4c;
+    color: #ffffff;
 }
-/* -------------------------
+
+
+/* ----------------------------------------------------------------
    10) MISC / LAYOUT
-   ------------------------- */
+   ---------------------------------------------------------------- */
 .container {
     transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* small responsiveness niceties */
+/* Small-screen slider scaling */
 @media (max-width: 576px) {
     .theme-slider { width: 52px; height: 30px; }
-    .slider::before { width: 22px; height: 22px; left: 4px; top: 4px; }
+    .slider::before { width: 22px; height: 22px; }
     .theme-slider input:checked + .slider::before { transform: translateX(22px); }
+}
+
+/* Warning info box */
+.fiber-box {
+    background-color: rgba(255, 193, 7, 0.15);
+    border: 1px solid rgba(255, 193, 7, 0.35);
+    padding: 1rem;
+    border-radius: 0.5rem;
 }
