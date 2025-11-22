@@ -121,7 +121,8 @@ def query():
 @app.route("/compute", methods=["POST"])
 def compute():
     """
-    Compute SPME Box-Behnken Design (BBD) conditions for user-selected compounds.
+    Compute SPME Box-Behnken Design (BBD) conditions for user-selected compounds and identify
+    the appropriate fiber to be used.
 
     Expects JSON input with the following structure:
         {
@@ -143,6 +144,7 @@ def compute():
             "status": "ok",
             "": <number_of_compounds_processed>,
             "table": "<HTML table of BBD design>" | null,
+            "fiber": "<one of par.Fiber enum values>",
             "errors": [
                 {"cas": "64-17-5", "cid": 702, "error": "..."},
                 ...
@@ -197,6 +199,7 @@ def compute():
 
         conds = SPMEConditions(*compounds)
 
+        conds.identify_fiber()
         conds.compute_salt_addition(is_ionic)
         conds.compute_extraction_time()
         conds.compute_extraction_temperature()
@@ -213,7 +216,8 @@ def compute():
 
             factor_map = [dict(zip([-1, 0, 1], factor_value)) for factor_value in factor_values]
 
-            design = pandas.DataFrame(pyDOE3.bbdesign(len(factor_values), center=1),
+            design = pandas.DataFrame(pyDOE3.bbdesign(len(factor_values),
+                                      center=bbd_center_points),
                                       columns=conds.get_doe_header(),
                                       dtype=int)
 
@@ -241,6 +245,7 @@ def compute():
         "status": "ok",
         "": len(compounds),
         "table": table_html,
+        "fiber": conds.fiber.value, # type: ignore
         "errors": errors
     })
 
