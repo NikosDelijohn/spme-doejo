@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SPME DoE – Compound Selector</title>
+    <title>SPME DoEjo</title>
 
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
@@ -104,6 +104,8 @@
         </button>
     </div>
 
+    <h4>Fiber Selection:</h4>
+    <div id="fiber_selection"></div>
     <!-- Box-Behnken Design Results -->
     <h4>Box-Behnken Design:</h4>
     <div id="results" class="p-3 border rounded"></div>
@@ -241,20 +243,16 @@ async function finalizeSelection() {
     });
     const result = await res.json();
 
+    const fiberSelectDiv = document.getElementById("fiber_selection");
     const resultsDiv = document.getElementById("results");
 
-    let fiberBox = "";
-    if (result.fiber) {
-        fiberBox = `
-            <div class="alert alert-warning mb-4 p-3" id="fiber-box">
-                <strong>Recommended Fiber:</strong> You should use the <strong>${result.fiber}</strong> fiber.
-            </div>
-        `;
-    }
+    fiberSelectDiv.innerHTML =  `
+        <div class="fiber-box mb-4" id="fiber-box">
+            <strong>Recommended Fiber:</strong> You should use the <strong>${result.fiber}</strong> fiber.
+        </div>
+    `;
 
-    resultsDiv.innerHTML = 
-        fiberBox +
-        (result.table 
+    resultsDiv.innerHTML = (result.table 
             ? `<div class="mt-5">${result.table}</div>` 
             : `<div class="alert alert-warning mt-5">No table generated.</div>`);
 }

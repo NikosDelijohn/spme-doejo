@@ -15,7 +15,8 @@
   - Charged / Ionic compounds  
   - High matrix viscosity  
 - Adjust the number of Box-Behnken Design center points.  
-- Generate a complete BBD table for SPME parameter optimization.  
+- Generate a complete BBD table for SPME parameter optimization.
+- Identify the appropriate fiber for your experiments.
 - Light / dark mode theme toggle.  
 - Responsive, modern interface using Bootstrap 5.
 
