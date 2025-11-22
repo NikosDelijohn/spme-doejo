@@ -1,0 +1,272 @@
+/* ===============================================================
+   style.css — cleaned + slider restored + spinner keyframes + error box
+   =============================================================== */
+
+/* -------------------------
+   1) THEME VARIABLES
+   Use :root for light defaults, and [theme="dark"] overrides.
+   Your JS sets the attribute on <html>.
+   ------------------------- */
+:root {
+    --primary-color:     #302AE6;
+    --secondary-color:   #536390;
+
+    --text-color:        #424242;
+    --text-color-rgb:    66, 66, 66;
+
+    --background-color:  #ffffff;
+    --heading-color:     #292922;
+}
+
+[theme="dark"] {
+    --primary-color:     #9A97F3;
+    --secondary-color:   #818cab;
+
+    --text-color:        #e1e1ff;
+    --text-color-rgb:    225, 225, 255;
+
+    --background-color:  #161625;
+    --heading-color:     #818cab;
+}
+
+/* -------------------------
+   2) GLOBAL
+   ------------------------- */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.navbar-brand {
+    color: var(--text-color) !important;
+    transition: color 0.25s ease;
+}
+
+.navbar-brand:hover {
+    color: var(--primary-color) !important;
+}
+
+/* -------------------------
+   3) BOOTSTRAP FORM OVERRIDES
+   keep inputs/selects/alerts readable in both themes
+   ------------------------- */
+.form-control,
+.form-select,
+.alert {
+    background-color: var(--background-color) !important;
+    color: var(--text-color) !important;
+    border-color: rgba(var(--text-color-rgb), 0.25) !important;
+}
+
+/* Ensure option elements inherit colors (some browsers need explicit rules) */
+.form-select option {
+    background-color: var(--background-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* -------------------------
+   3.1) LARGER CHECKBOXES
+   ------------------------- */
+.form-check-input {
+    transform: scale(1.0);   
+    margin-right: 0.5rem;    /* optional spacing adjustment */
+}
+
+/* -------------------------
+   4) TEXT / HELPERS
+   ------------------------- */
+label,
+strong,
+.card-title,
+.alert,
+#selection_area strong,
+#selection_area label,
+#selection_area .form-select {
+    color: var(--text-color) !important;
+}
+
+.text-muted {
+    color: var(--text-color) !important;
+    opacity: 0.65 !important;
+}
+
+/* -------------------------
+   5) PLACEHOLDERS (clean, cross-browser)
+   ------------------------- */
+.form-control::placeholder,
+textarea::placeholder {
+    color: rgba(var(--text-color-rgb), 0.55) !important;
+    opacity: 1;
+}
+
+/* WebKit / Blink */
+.form-control::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder { color: rgba(var(--text-color-rgb), 0.55) !important; }
+
+/* Firefox */
+.form-control::-moz-placeholder,
+textarea::-moz-placeholder { color: rgba(var(--text-color-rgb), 0.55) !important; }
+
+/* IE 10+ */
+.form-control:-ms-input-placeholder,
+textarea:-ms-input-placeholder { color: rgba(var(--text-color-rgb), 0.55) !important; }
+
+/* -------------------------
+   6) THEME SLIDER — restored and tuned
+   ------------------------- */
+
+.theme-slider {
+    display: inline-block;
+    height: 34px;
+    width: 60px;
+    position: relative;
+    vertical-align: middle;
+}
+
+/* hide the native checkbox (but keep it focusable) */
+.theme-slider input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* the track */
+.slider {
+    position: absolute;
+    inset: 0;
+    background-color: #ccc;
+    border-radius: 34px;
+    transition: background-color 0.25s ease;
+}
+
+/* the knob */
+.slider::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 4px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    transition: transform 0.25s ease, background-color 0.25s ease;
+}
+
+/* checked state — uses adjacent sibling selector */
+.theme-slider input:checked + .slider {
+    background-color: var(--primary-color);
+}
+
+.theme-slider input:checked + .slider::before {
+    transform: translateX(26px);
+}
+
+/* rounded styles (keeps backward compatibility) */
+.slider.round { border-radius: 34px; }
+.slider.round::before { border-radius: 50%; }
+
+/* keyboard focus accessibility */
+.theme-slider input:focus + .slider {
+    box-shadow: 0 0 0 3px rgba(50, 115, 220, 0.12);
+}
+
+/* -------------------------
+   7) CARD / THEME BOX for dynamic selection boxes
+   ------------------------- */
+.theme-box {
+    transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid rgba(var(--text-color-rgb), 0.12);
+}
+
+/* inside theme-box ensure selects inherit color */
+.theme-box .form-select {
+    background-color: var(--background-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* -------------------------
+   8) BUTTON SPINNER — FIXED
+   ------------------------- */
+
+#submitBtn {
+    position: relative;
+    min-width: 200px;
+    overflow: hidden;
+}
+
+#submitBtn .btn-text {
+    transition: opacity 0.2s ease;
+}
+
+/* wrapper handles vertical centering */
+#submitBtn .spinner-wrapper {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* spinner handles ONLY rotation */
+#submitBtn .spinner-border {
+    width: 1.4rem;
+    height: 1.4rem;
+    transform-origin: center;
+    animation: spinner-rotate 0.75s linear infinite !important;
+    display: none;
+}
+
+/* show spinner + hide text */
+#submitBtn.loading .btn-text {
+    opacity: 0;
+}
+#submitBtn.loading .spinner-border {
+    display: block !important;
+}
+
+/* correct spinning animation */
+@keyframes spinner-rotate {
+    100% { transform: rotate(360deg); }
+}
+
+/* -------------------------
+   9) ERROR BOX (themed, works in both light & dark)
+   ------------------------- */
+.error-box {
+    background-color: #ffe5e5;     /* light pink/red background in light mode */
+    border: 1px solid #ff4c4c;    /* strong red border */
+    color: #b20000;                /* dark red text for readability */
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+[theme="dark"] .error-box {
+    background-color: #5a0000;     /* deep red background */
+    border-color: #ff4c4c;         /* bright red border for contrast */
+    color: #ffffff;                /* white text for readability */
+}
+/* -------------------------
+   10) MISC / LAYOUT
+   ------------------------- */
+.container {
+    transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* small responsiveness niceties */
+@media (max-width: 576px) {
+    .theme-slider { width: 52px; height: 30px; }
+    .slider::before { width: 22px; height: 22px; left: 4px; top: 4px; }
+    .theme-slider input:checked + .slider::before { transform: translateX(22px); }
+}

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SPME DoE – Compound Selector</title>
+
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- ======================
+     NAVBAR
+====================== -->
+<nav class="navbar navbar-expand-lg fixed-top shadow-sm">
+    <div class="container-fluid">
+        <!-- Brand -->
+        <a class="navbar-brand fw-bold" href="#" id="navbarBrand">
+            SPME-DoEjo: SPME parameter optimization.
+        </a>
+
+        <!-- Theme Toggle -->
+        <div class="d-flex align-items-center gap-3">
+            <span id="themeLabel" class="fs-4">Sun</span>
+            <label class="theme-slider" for="themeCheckbox">
+                <input type="checkbox" id="themeCheckbox">
+                <div class="round slider"></div>
+            </label>
+        </div>
+    </div>
+</nav>
+
+<!-- ======================
+     MAIN CONTAINER
+====================== -->  
+
+<div class="container py-4 pt-5 mt-5">
+
+    <!-- Heading -->
+    <h2 class="mb-4 text-left">Compound Selector</h2>
+
+    <!-- CAS Input -->
+    <div class="mb-3">
+        <label for="cas_input" class="form-label">Enter CAS numbers (comma or line-separated):</label>
+        <textarea id="cas_input" class="form-control" rows="4" placeholder="64-17-5, 50-99-7&#10;67-56-1&#10;50-00-0"></textarea>
+    </div>
+
+    <!-- Resolve Compounds Button -->
+    <div class="text-center mb-5">
+        <button class="btn btn-primary btn-lg px-5 position-relative" id="submitBtn" onclick="submitCas()">
+            <span class="btn-text">Resolve Compounds</span>
+
+            <!-- Spinner wrapper -->
+            <div class="spinner-wrapper">
+                <div class="spinner-border spinner-border-sm d-none" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </button>
+    </div>
+
+    <!-- Compound Selection -->
+    <h4 class="mb-4">
+        Select Compounds: 
+        <small class="text-muted fst-italic opacity-75">
+            Resolve ambiguous CAS → CID mappings
+        </small>
+    </h4>
+    <div id="selection_area" class="mb-4"></div>
+
+    <!-- Properties Selection -->
+    <h4 class="mb-4">
+        Select Properties: 
+        <small class="text-muted fst-italic opacity-75">
+            Is ANY of the compounds provided charged or ionic? Is there high matrix viscosity?
+        </small>
+    </h4>
+
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="charged_checkbox">
+        <label class="form-check-label" for="charged_checkbox">Charged or Ionic</label>
+    </div>
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="viscosity_checkbox">
+        <label class="form-check-label" for="viscosity_checkbox">High Matrix Viscosity</label>
+    </div>
+
+    <div class="mb-3">
+        <label for="center_points" class="form-label">Number of BBD Center Points:</label>
+        <input type="number" id="center_points" class="form-control" 
+            min="1" max="20" value="1" step="1" style="width: 80px; display: inline-block;">
+        <small class="text-muted fst-italic">Choose how many center points to include in the design (1–20).</small>
+    </div>
+
+    <!-- Finalize Selection Button -->
+    <div class="text-center mb-4">
+        <button class="btn btn-success btn-lg px-5 position-relative" onclick="finalizeSelection()">
+            Finalize Selection
+        </button>
+    </div>
+
+    <!-- Box-Behnken Design Results -->
+    <h4>Box-Behnken Design:</h4>
+    <div id="results" class="p-3 border rounded"></div>
+
+</div>
+
+<!-- ======================
+     SCRIPT
+====================== -->
+<script>
+let compoundOptions = {};
+
+// ----------------------
+// Theme Toggle
+// ----------------------
+const toggleSwitch = document.getElementById("themeCheckbox");
+const themeLabel   = document.getElementById("themeLabel");
+
+// Apply saved theme on load
+const savedTheme = localStorage.getItem("theme") || "light";
+document.documentElement.setAttribute("theme", savedTheme);
+themeLabel.textContent = savedTheme === "dark" ? "🌚" : "🌞";
+toggleSwitch.checked = (savedTheme === "dark");
+
+function switchTheme(e) {
+    if (e.target.checked) {
+        document.documentElement.setAttribute("theme", "dark");
+        themeLabel.textContent = "🌚";
+        localStorage.setItem("theme", "dark");
+    } else {
+        document.documentElement.setAttribute("theme", "light");
+        themeLabel.textContent = "🌞";
+        localStorage.setItem("theme", "light");
+    }
+}
+
+toggleSwitch.addEventListener("change", switchTheme);
+
+// ----------------------
+// Submit CAS Numbers
+// ----------------------
+async function submitCas() {
+    const raw = document.getElementById("cas_input").value.trim();
+    if (!raw) return alert("Please enter at least one CAS number");
+
+    // SHOW SPINNER
+    const btn = document.getElementById("submitBtn");
+    btn.classList.add("loading");
+    btn.disabled = true;
+
+    const cas_list = raw.split(/\s*[\n,]\s*/).map(s => s.trim()).filter(Boolean);
+
+    try {
+        const res = await fetch("/query", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({cas_list})
+        });
+
+        const data = await res.json();
+        const area = document.getElementById("selection_area");
+        area.innerHTML = "";
+        compoundOptions = {};
+
+        data.forEach(item => {
+            if (item.error) {
+                // Display error in themed red box
+                area.innerHTML += `<div class="error-box">${item.cas}: ${item.error}</div>`;
+                return;
+            }
+
+            const cas = item.cas;
+            const opts = item.options;
+
+            if (opts.length === 1) {
+                // Auto-select if only one option
+                compoundOptions[cas] = opts[0].cid;
+                area.innerHTML += `<div class="alert alert-success mb-3"><strong>${cas}</strong>: ${opts[0].iupac_name} (auto-selected)</div>`;
+            } else {
+                // Multiple options — show dropdown
+                let optionsHTML = opts.map(o => 
+                    `<option value="${o.cid}">${o.iupac_name || "No name"} (CID: ${o.cid})</option>`
+                ).join("");
+
+                area.innerHTML += `
+                    <div class="card mb-4 shadow-sm" style="background-color:var(--background-color); border:1px solid var(--text-color);">
+                        <div class="card-body">
+                            <h6 class="card-title mb-3"><strong>${cas}</strong> – Select correct compound:</h6>
+                            <select id="select_${cas}" class="form-select" 
+                                    style="background-color:var(--background-color); color:var(--text-color);">
+                                ${optionsHTML}
+                            </select>
+                        </div>
+                    </div>`;
+            }
+        });
+    } catch (err) {
+        alert("Network error: " + err.message);
+    } finally {
+        // HIDE SPINNER
+        btn.classList.remove("loading");
+        btn.disabled = false;
+    }
+}
+
+// ----------------------
+// Finalize Selection
+// ----------------------
+async function finalizeSelection() {
+    // Gather selected CIDs
+    document.querySelectorAll("select[id^='select_']").forEach(sel => {
+        if (sel.value) {
+            const cas = sel.id.replace("select_", "");
+            compoundOptions[cas] = sel.value;
+        }
+    });
+
+    if (Object.keys(compoundOptions).length === 0) {
+        return alert("No compounds selected.");
+    }
+
+    const payload = {
+        selection: compoundOptions,
+        properties: {
+            is_ionic: document.getElementById("charged_checkbox").checked,
+            has_high_viscocity: document.getElementById("viscosity_checkbox").checked
+        },
+        center_points: parseInt(document.getElementById("center_points").value)
+    };
+
+    const res = await fetch("/compute", { 
+        method: "POST", 
+        headers: {"Content-Type": "application/json"}, 
+        body: JSON.stringify(payload) 
+    });
+    const result = await res.json();
+
+    // Display results
+    document.getElementById("results").innerHTML = result.table 
+        ? `<div class="mt-5">${result.table}</div>`
+        : `<div class="alert alert-warning mt-5">No table generated.</div>`;
+}
+</script>
+
+</body>
+</html>
