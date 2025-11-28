@@ -1,4 +1,4 @@
-# SPME-DoEjo
+# SPME-DoEjo ⚗️
 
 ![App Mascot](docs/img/app_mascot.png)
 
@@ -8,21 +8,29 @@
 
 ## Features 
 
-- Input multiple CAS numbers (comma- or line-separated).  
-- Auto-resolve PubChem CIDs and IUPAC names.  
-- Select compounds when multiple matches exist.  
+- Input multiple CAS numbers (comma- or line-separated).
+- Auto-resolve PubChem CIDs and IUPAC names.
+- Select compounds when multiple matches exist.
 - Specify experimental properties:
-  - Charged / Ionic compounds  
-  - High matrix viscosity  
-- Adjust the number of Box-Behnken Design center points.  
+  - Charged / Ionic compounds
+  - High matrix viscosity
+- Adjust the number of Box-Behnken Design center points.
 - Generate a complete BBD table for SPME parameter optimization.
 - Identify the appropriate fiber for your experiments.
-- Light / dark mode theme toggle.  
+- Light / dark mode theme toggle. 
 - Responsive, modern interface using Bootstrap 5.
 
 ---
 
-## Installation 
+## Online Access 🌐
+
+You can access SPME-DoEjo here: https://spme-doejo.onrender.com
+
+> Note that you may have to wait a couple of seconds for the Render runner to boot-up and serve the content.
+
+---
+
+## Local Usage/Development 🖥️
 
 1. Clone the repository:
 
@@ -59,7 +67,7 @@ http://127.0.0.1:5000/
 
 ---
 
-## Usage
+## Usage 🤔
 
 1. Enter CAS numbers in the text area.  
 2. Click **Resolve Compounds**.  
@@ -73,12 +81,13 @@ http://127.0.0.1:5000/
 
 ---
 
-## Project Structure
+## Project Structure 🦴
 
 ```
 spme-doejo/
 │
-├─ backend.py                 # Flask backend routes and logic
+├─ backend.py                 # Flask backend routes and logic (dev/testing)
+├─ backend_wsgi.py            # Flask backend routes and logic (gunicorn)
 ├─ requirements.txt           # Python dependencies
 ├─ templates/
 │   └─ frontend.html          # Main HTML & JS frontend
@@ -90,7 +99,8 @@ spme-doejo/
     ├─ __init__.py
     ├─ compound.py
     ├─ parameters.py      
-    └─ spme_conditions.py
+    ├─ spme_conditions.py
+    └─ wsgi.py                # gunicorn entry point
 ```
 
 ---
@@ -104,13 +114,27 @@ spme-doejo/
 
 ---
 
-## Contributing
+## Contributing 🤝
 
 Contributions are welcome! Please follow standard GitHub workflow: fork, branch, PR.
 
 ---
 
-## License
+## License 📜
 
 [Apache-2.0](LICENSE)
 
+---
+## Contact Info 📬
+
+```
+Laboratory of Analytical Chemistry  
+School of Chemistry, AUTH Thessaloniki, Greece, 54124  
+```
+
+**Researchers:**
+- **Maria Kousi 👩‍🔬** – [Email](mailto:mkousib@chem.auth.gr?subject=SPME-DoeJo)
+- **Natasa Kalogiouri 👩‍🏫** – [Email](mailto:kalogiourin@chem.auth.gr?subject=SPME-DoeJo)
+
+<img src="docs/img/auth_logo.png" alt="AUTH" width="230"/>
+<img src="docs/img/seplab_logo.png" alt="SepLab" width="230"/> 
