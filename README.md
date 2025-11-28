@@ -81,6 +81,13 @@ http://127.0.0.1:5000/
 
 ---
 
+## Wiki 🦉
+
+For detailed documentation, visit the [SPME-DoEjo Wiki](https://github.com/NikosDelijohn/spme-doejo/wiki)
+
+
+---
+
 ## Project Structure 🦴
 
 ```
