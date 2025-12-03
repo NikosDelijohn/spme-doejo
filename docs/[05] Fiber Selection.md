@@ -17,9 +17,9 @@ Accordingly, the algorithm uses the **maximum** $XLogP$ among the analytes to cl
 - **DVB/CAR/PDMS** (50/30 µm) — Multimodal composite phase providing broad selectivity from highly volatile to semi-volatile organics ($0.5<XLogP<3.0$).
 The CAR micropores trap small molecules (< C₆), while the DVB and PDMS layers capture higher-mass volatiles, making this coating optimal for complex or mixed matrices.
 
-- **CW/DVB/PA** — Polar composite phase designed for low-molecular-weight, hydrophilic compounds ($XLogP≤1.5$). The carbowax and polyacrylate components enhance hydrogen-bonding interactions and extraction of alcohols, organic acids, and aldehydes.
+- **CW/DVB-PA** — Polar composite phase designed for low-molecular-weight, hydrophilic compounds ($XLogP≤1.5$). The carbowax and polyacrylate components enhance hydrogen-bonding interactions and extraction of alcohols, organic acids, and aldehydes.
 
-- **CAP-PDMS/PEG/CW** — Highly polar, hydrophilic coating for ionic, charged, or very low-volatility compounds ($XLogP \lesssim 1.0$ and $M < 200 \  Da$ ).
+- **PEG-PA** — Highly polar, hydrophilic coating for ionic, charged, or very low-volatility compounds ($XLogP \lesssim 1.0$ and $M < 200 \  Da$ ).
 
 This coating targets strongly polar analytes such as short-chain acids, small amines, or environmental micropollutants that are poorly retained on conventional fibers. 
 
@@ -35,7 +35,7 @@ with transition thresholds at XLogP ≈ 3.0, 1.5, and 1.0. This quantitative map
 
 [**α**] A. Paschke, P. Popp, Solid-phase microextraction fibre–water distribution constants of more hydrophobic organic compounds and their correlations with octanol–water partition coefficients, Journal of Chromatography A, Volume 999, Issues 1–2, 2003, Pages 35-42, [DOI](https://doi.org/10.1016/S0021-9673(03)00538-7).
 
-[**β**] SPME for GC Analysis, Getting Started with Solid Phase Microextraction, Supelcro [PDF](http://www.supelco.com.tw/C-01-SPME-FIber.pdf).
+[**β**] SPME for GC Analysis, Getting Started with Solid Phase Microextraction, Supelro [PDF](http://www.supelco.com.tw/C-01-SPME-FIber.pdf).
 
 [**γ**] C. Lancioni, C. Castells, R. Candal, M. Tascon, Headspace solid-phase microextraction: Fundamentals and recent advances, Advances in Sample Preparation, Volume 3, 2022, 100035, [DOI](https://doi.org/10.1016/j.sampre.2022.100035).
 

@@ -16,8 +16,8 @@ class Fiber(enum.Enum):
 
     PDMS = "PDMS"
     PDMS_DVB = "PDMS-DVB"
-    CAPPDMS_PEG_CW = "CAP-PDMS/PEG/CW"
-    CW_DBV_PA = "CW/DBV/PA"
+    CAPPDMS_PEG_CW = "PEG-PA"
+    CW_DVB_PA = "CW/DVB-PA"
     DVB_CAR_PDMS = "DVB/CAR/PDMS"
 
 class ExtractionTempCelsius(enum.Enum):

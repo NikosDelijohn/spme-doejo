@@ -130,7 +130,7 @@ class SPMEConditions():
             if all(float(comp.molecular_weight) <= 200 for comp in self.compounds):
                 retval = par.Fiber.CAPPDMS_PEG_CW
             else:
-                retval = par.Fiber.CW_DBV_PA
+                retval = par.Fiber.CW_DVB_PA
 
         self.fiber = retval
         return retval
@@ -369,7 +369,7 @@ class SPMEConditions():
             par.Fiber.PDMS: "3-5 min @ 250-280°C",
             par.Fiber.PDMS_DVB: "3-5 min @ 250-270°C",
             par.Fiber.DVB_CAR_PDMS: "4-6 min @ 270-300°C",
-            par.Fiber.CW_DBV_PA: "4-6 min @ 250-280°C",
+            par.Fiber.CW_DVB_PA: "4-6 min @ 250-280°C",
             par.Fiber.CAPPDMS_PEG_CW: "4-5 min @ 250-280°C"
         }[self.fiber] # type: ignore
 
