@@ -141,7 +141,6 @@ School of Chemistry, AUTH Thessaloniki, Greece, 54124
 
 **Researchers:**
 - **Maria Kousi 👩‍🔬** – [Email](mailto:mkousib@chem.auth.gr?subject=SPME-DoeJo)
-- **Natasa Kalogiouri 👩‍🏫** – [Email](mailto:kalogiourin@chem.auth.gr?subject=SPME-DoeJo)
 
 <img src="docs/img/auth_logo.png" alt="AUTH" width="230"/>
 <img src="docs/img/seplab_logo.png" alt="SepLab" width="230"/> 
